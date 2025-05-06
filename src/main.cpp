@@ -54,6 +54,7 @@ bool initializelibs(){
         glfwTerminate();
         return false;
     }
+    glViewport(0,0,winsize[0],winsize[1]);
 
     return true;
 }
