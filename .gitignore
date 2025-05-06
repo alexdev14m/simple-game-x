@@ -1,0 +1,8 @@
+gamex
+
+build/
+
+.vscode/
+
+*.o
+*.a
