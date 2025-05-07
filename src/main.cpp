@@ -2,11 +2,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+// * Already declared the variables
 GLFWwindow* win;
 int winsize[2] = {800, 600};
             //  w    h
 const char* title = "OpenGL Window";
 
+// * Initializing GLFW
+// ! Do NOT touch or change, unless needed
 bool initGLFW(){
     if (!glfwInit())
     {
@@ -18,6 +21,9 @@ bool initGLFW(){
 
     return true;
 }
+
+// * Making the window, that way we can load (initialize) GLAD
+// ! Do NOT touch or change, unless needed
 bool makeWindow(int w,int h,const char* name){
     win = glfwCreateWindow(w, h, name, nullptr, nullptr);
 
@@ -33,6 +39,9 @@ bool makeWindow(int w,int h,const char* name){
 
     return true;
 }
+
+// * Loading (Initializing) GLAD
+// ! Do NOT touch or change, unless needed
 bool loadGLAD(){
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         std::cerr << "Error: Failed to load GLAD" << std::endl;
@@ -45,6 +54,8 @@ bool loadGLAD(){
     return true;
 }
 
+// ** Initialize everything
+// ! Do NOT touch or change, unless needed
 bool initializelibs(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -59,13 +70,26 @@ bool initializelibs(){
     return true;
 }
 
+void regInputs(GLFWwindow* window) {
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+void changeWinColor(float r, float g, float b, float a){
+    glClearColor(r,g,b,a);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+// * The loop for the window
 void winLoop(GLFWwindow* window){
     std::cout << "Looping the window!" << std::endl;
 
     while (!glfwWindowShouldClose(window))
     {
-        glfwPollEvents();
+        regInputs(win);
+        changeWinColor(0.2f,0.3f,0.3f,1.0f);
+
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
     
 }
