@@ -1,12 +1,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
+#include "utils.hpp"
 
 // * Already declared the variables
 GLFWwindow* win;
 int winsize[2] = {800, 600};
             //  w    h
 const char* title = "OpenGL Window";
+
+unsigned int VBO;
 
 // * Initializing GLFW
 // ! Do NOT touch or change, unless needed
@@ -70,11 +74,21 @@ bool initializelibs(){
     return true;
 }
 
+// *Registers input
+// TODO: Can be changed, ONLY when adding new inputs, otherwise do NOT touch.
 void regInputs(GLFWwindow* window) {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
+
+// * Assigning the window a background color
+// ! Do NOT touch or change, at all unless you know what you're doing
 void changeWinColor(float r, float g, float b, float a){
+    if (r == 0.0f || g == 0.0f || b == 0.0f || a == 0.0f) // TODO: Alex find a better way to do this !!!
+    {
+        std::cerr << "Error: One or more of the color values are NULL."; 
+    }
+    
     glClearColor(r,g,b,a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -93,13 +107,22 @@ void winLoop(GLFWwindow* window){
     }
     
 }
-
+// # MAIN LOOP
 int main(int argc, char const *argv[])
 {
     if(!initializelibs()){
-        std::cout << "Error: Failed to initialize libraries" << std::endl;
+        std::cerr << "Error: Failed to initialize libraries" << std::endl;
         return -1;
     }
+
+    Utils utils;
+
+    if(!utils.genVBO(VBO)) {
+        std::cerr << "Error: Failed to generate VBO." << std::endl;
+        return -1;
+    }
+    
+    std::cout << "Generated VBO!" << std::endl;
 
     winLoop(win);
 
