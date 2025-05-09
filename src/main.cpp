@@ -11,6 +11,8 @@ int winsize[2] = {800, 600};
             //  w    h
 const char* title = "OpenGL Window";
 
+unsigned int vertShader;
+unsigned int fragShader;
 unsigned int VBO;
 unsigned int shaderProgram;
 
@@ -123,8 +125,8 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    unsigned int vertShader = glCreateShader(GL_VERTEX_SHADER);
-    unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+    vertShader = glCreateShader(GL_VERTEX_SHADER);
+    fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     if(!Utils::genVBO(VBO)) {
         std::cerr << "Error: Failed to generate VBO." << std::endl;
@@ -132,6 +134,8 @@ int main(int argc, char const *argv[])
     }
     
     std::cout << "Generated VBO!" << std::endl;
+
+    Utils::interVertData();
 
     Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl");
 
@@ -165,3 +169,4 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
+    
