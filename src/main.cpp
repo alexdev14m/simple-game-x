@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cmath>
 #include "utils.hpp"
+#include "draw.hpp"
 
 // * Already declared the variables
 GLFWwindow* win;
@@ -14,6 +15,7 @@ const char* title = "OpenGL Window";
 unsigned int vertShader;
 unsigned int fragShader;
 unsigned int VBO;
+unsigned int VAO;
 unsigned int shaderProgram;
 
 // * Initializing GLFW
@@ -120,24 +122,44 @@ bool winLoop(GLFWwindow* window){
 // # MAIN LOOP
 int main(int argc, char const *argv[])
 {
+
+    // * Handling the the worst case scenario
     if(!initializelibs()){
         std::cerr << "Error: Failed to initialize libraries" << std::endl;
         return -1;
     }
 
-    vertShader = glCreateShader(GL_VERTEX_SHADER);
-    fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // ! DO NOT TOUCH THIS ASSIGNMENT OF VALUE! IT CAN BREAK A TON OF STUFF!
+    vertShader = glCreateShader(GL_VERTEX_SHADER); // * Assignment of the Vertex Shader
+    fragShader = glCreateShader(GL_FRAGMENT_SHADER); // * Assignment of the Fragment Shader
 
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    // * Handling the errors that could happen during generation of VBO
     if(!Utils::genVBO(VBO)) {
         std::cerr << "Error: Failed to generate VBO." << std::endl;
         return -1;
     }
     
+    float vertices[] = {
+        0.0f,0.5f,0.0f,
+        0.5f,0.0f,0.5f,
+        -0.5f,0.0f,0.5f,
+        -0.5f,0.0f,-0.5f,
+        0.5f,0.0f,-0.5f
+    };
+
     std::cout << "Generated VBO!" << std::endl;
 
-    Utils::interVertData();
+    Utils::uploadToVBO(vertices);
 
-    Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl");
+    Utils::interVertData(); // * A simple function which tells OpenGL how to interpret Vertex Data
+
+    Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl"); // # Just calling the constructor here nothing much
+
+    // * Here I'm actually compiling the shaders, making them usable
+    // ! Do not mess with this, it's just some setup code, it won't alter the result of the graphics. Well if messed with it might just not even work.
 
     if(!Shaders::makeShader(vertShader, shade.getVShaderCode())){
         std::cerr << "Failed to make the vertex shader!" << std::endl;
@@ -149,23 +171,27 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    shaderProgram = glCreateProgram();
+    shaderProgram = glCreateProgram(); // * Creation of the program
 
+    // * Simple and clean attachments of shaders
     Shaders::attachShader(shaderProgram, vertShader);
     Shaders::attachShader(shaderProgram, fragShader);
 
     glUseProgram(shaderProgram);
-    
+    Draw::drawPyramid(vertices, Utils::calculateNumOfElm(vertices), 3);
+
+    // * Simple and clean removal of shaders
     Shaders::rmShad(vertShader);
     Shaders::rmShad(fragShader);
 
+    // * Handling the worst case scenario No. 2
     if(!winLoop(win)){
         std::cerr << "Failed to loop the Mr. Loop!" << std::endl;
         
         return -1;
     }
     
-    glfwTerminate();
+    glfwTerminate(); // # Ending it!
 
     return 0;
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -98,11 +100,20 @@ class Shaders {
             
             return true;
         }
-        
+
         static void interVertData(){
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
     
             std::cout << "Successfully, told OpenGL how to interpret vertex data!" << std::endl;
+        }
+
+        static void uploadToVBO(const float* data){
+            glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+        }
+
+        template <typename T, size_t N>
+        static constexpr size_t calculateNumOfElm(T (&)[N]){
+            return N;
         }
     };
