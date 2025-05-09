@@ -6,6 +6,14 @@
 #include "utils.hpp"
 #include "draw.hpp"
 
+float vertices[] = {
+    0.0f,0.5f,0.0f,
+    0.5f,0.0f,0.5f,
+    -0.5f,0.0f,0.5f,
+    -0.5f,0.0f,-0.5f,
+    0.5f,0.0f,-0.5f
+};
+
 // * Already declared the variables
 GLFWwindow* win;
 int winsize[2] = {800, 600};
@@ -111,7 +119,9 @@ bool winLoop(GLFWwindow* window){
         if(!changeWinColor(0.2f,0.3f,0.3f,1.0f)) {
             std::cerr << "Setting colors failed!" << std::endl;
             return false;
-        }
+        }        
+
+        Draw::drawPyramid(vertices, Utils::calculateNumOfElm(vertices), 3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -142,17 +152,11 @@ int main(int argc, char const *argv[])
         return -1;
     }
     
-    float vertices[] = {
-        0.0f,0.5f,0.0f,
-        0.5f,0.0f,0.5f,
-        -0.5f,0.0f,0.5f,
-        -0.5f,0.0f,-0.5f,
-        0.5f,0.0f,-0.5f
-    };
+    
 
     std::cout << "Generated VBO!" << std::endl;
 
-    Utils::uploadToVBO(vertices);
+    Utils::uploadToVBO(vertices, sizeof(vertices));
 
     Utils::interVertData(); // * A simple function which tells OpenGL how to interpret Vertex Data
 
@@ -195,4 +199,3 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
-    
