@@ -51,6 +51,30 @@ class Shaders {
             return true;
         }
 
+        static bool attachShader(unsigned int program, unsigned int shader){
+            glAttachShader(program, shader);
+            glLinkProgram(program);
+
+            int success;
+            char infolog[512];
+            glGetProgramiv(program, GL_LINK_STATUS, & success);
+            if (!success){
+                glGetProgramInfoLog(program, 512, NULL, infolog);
+                std::cerr << "Error: Couldn't attach the shader to the program! Log: " << infolog << std::endl;
+
+                return false;
+            }
+
+            std::cout << "Successfully attached the shader to the program!" << std::endl;
+
+            return true;
+        }
+
+        static void rmShad(unsigned int shader) {
+            std::cout << "Removed the shader!" << std::endl;
+            glDeleteShader(shader);
+        }
+
         std::string getVShaderCode() const { return vertexShaderCode; }
         std::string getFShaderCode() const { return fragmentShaderCode; }
 
