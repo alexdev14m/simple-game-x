@@ -40,12 +40,14 @@ class Shaders {
             char infolog[512];
             glGetShaderiv(shaderVar, GL_COMPILE_STATUS, &success);
 
-            if(!success) {
-                std::cerr << "Error: Could't compile the shader." << std::endl;
+            if (!success) {
+                glGetShaderInfoLog(shaderVar, 512, NULL, infolog);
+                std::cerr << "Error: Could't compile the shader. Log: " << infolog << std::endl;
+                return false;
             }
 
             std::cout << "Successfully made the shader!" << std::endl;
-            
+
             return true;
         }
 

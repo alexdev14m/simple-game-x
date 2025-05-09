@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include "utils.hpp"
 
 // * Already declared the variables
@@ -83,29 +84,35 @@ void regInputs(GLFWwindow* window) {
 
 // * Assigning the window a background color
 // ! Do NOT touch or change, at all unless you know what you're doing
-void changeWinColor(float r, float g, float b, float a){
-    if (r == 0.0f || g == 0.0f || b == 0.0f || a == 0.0f) // TODO: Alex find a better way to do this !!!
-    {
-        std::cerr << "Error: One or more of the color values are NULL."; 
+bool changeWinColor(float r, float g, float b, float a){
+    if (std::isnan(r) || std::isnan(g) || std::isnan(b) || std::isnan(a) ||
+        r < 0.0f || r > 1.0f || g < 0.0f || g > 1.0f || b < 0.0f || b > 1.0f || a < 0.0f || a > 1.0f) {
+        std::cerr << "Error: One or more of the color values are invalid. Valid range is [0.0, 1.0].\n";
+        return false;
     }
     
     glClearColor(r,g,b,a);
     glClear(GL_COLOR_BUFFER_BIT);
+    return true;
 }
 
 // * The loop for the window
-void winLoop(GLFWwindow* window){
+bool winLoop(GLFWwindow* window){
     std::cout << "Looping the window!" << std::endl;
 
     while (!glfwWindowShouldClose(window))
     {
         regInputs(win);
-        changeWinColor(0.2f,0.3f,0.3f,1.0f);
+        if(!changeWinColor(0.2f,0.3f,0.3f,1.0f)) {
+            std::cerr << "Setting colors failed!" << std::endl;
+            return false;
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     
+    return true;
 }
 // # MAIN LOOP
 int main(int argc, char const *argv[])
@@ -127,9 +134,16 @@ int main(int argc, char const *argv[])
 
     Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl");
 
-    Shaders::makeShader(vertShader, shade.getVShaderCode());
+    if(!Shaders::makeShader(vertShader, shade.getVShaderCode())){
+        std::cerr << "Failed to make the shader!" << std::endl;
+        return -1;
+    }
 
-    winLoop(win);
+    if(!winLoop(win)){
+        std::cerr << "Failed to loop the Mr. Loop!" << std::endl;
+
+        return -1;
+    }
 
     glfwTerminate();
 
