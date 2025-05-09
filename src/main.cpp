@@ -12,6 +12,7 @@ int winsize[2] = {800, 600};
 const char* title = "OpenGL Window";
 
 unsigned int VBO;
+unsigned int shaderProgram;
 
 // * Initializing GLFW
 // ! Do NOT touch or change, unless needed
@@ -135,16 +136,31 @@ int main(int argc, char const *argv[])
     Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl");
 
     if(!Shaders::makeShader(vertShader, shade.getVShaderCode())){
-        std::cerr << "Failed to make the shader!" << std::endl;
+        std::cerr << "Failed to make the vertex shader!" << std::endl;
         return -1;
     }
+
+    if(!Shaders::makeShader(fragShader, shade.getFShaderCode())){
+        std::cerr << "Failed to make the fragment shader!" << std::endl;
+        return -1;
+    }
+
+    shaderProgram = glCreateProgram();
+
+    Shaders::attachShader(shaderProgram, vertShader);
+    Shaders::attachShader(shaderProgram, fragShader);
+
+    glUseProgram(shaderProgram);
+    
+    Shaders::rmShad(vertShader);
+    Shaders::rmShad(fragShader);
 
     if(!winLoop(win)){
         std::cerr << "Failed to loop the Mr. Loop!" << std::endl;
-
+        
         return -1;
     }
-
+    
     glfwTerminate();
 
     return 0;
