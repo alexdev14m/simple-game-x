@@ -1,3 +1,5 @@
+#pragma once
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -90,19 +92,29 @@ class Shaders {
         std::string fragmentShaderCode;
     };
     
-    class Utils {
-        public:
-        static bool genVBO(unsigned int &VBOVar){
-            glGenBuffers(1, &VBOVar);
-            glBindBuffer(GL_ARRAY_BUFFER, VBOVar);
-            
-            return true;
-        }
-        
-        static void interVertData(){
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-    
-            std::cout << "Successfully, told OpenGL how to interpret vertex data!" << std::endl;
-        }
-    };
+class Utils {
+public:
+    static bool genVBO(unsigned int &VBOVar) {
+        glGenBuffers(1, &VBOVar);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOVar);
+        return true;
+    }
+
+    static void interVertData() {
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        std::cout << "Successfully told OpenGL how to interpret vertex data!" << std::endl;
+    }
+
+    // Uploads data to currently bound VBO
+    static void uploadToVBO(const float* data, size_t sizeInBytes) {
+        glBufferData(GL_ARRAY_BUFFER, sizeInBytes, data, GL_STATIC_DRAW);
+        std::cout << "Uploaded " << sizeInBytes << " bytes to the VBO." << std::endl;
+    }
+
+    // Generic function to calculate number of elements in an array
+    template<typename T, size_t N>
+    static constexpr size_t calculateNumOfElm(const T (&)[N]) {
+        return N;
+    }
+};
