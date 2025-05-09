@@ -75,26 +75,34 @@ class Shaders {
             glDeleteShader(shader);
         }
 
+        
         std::string getVShaderCode() const { return vertexShaderCode; }
         std::string getFShaderCode() const { return fragmentShaderCode; }
-
+        
         void printShaderCodes() {
             std::cout << "Vertex Shader Code:\n" << getVShaderCode() << std::endl;
             std::cout << "Fragment Shader Code:\n" << getFShaderCode() << std::endl;
         }
-
-
-    private:
+        
+        
+        private:
         std::string vertexShaderCode;
         std::string fragmentShaderCode;
-};
-
-class Utils {
-    public:
+    };
+    
+    class Utils {
+        public:
         static bool genVBO(unsigned int &VBOVar){
             glGenBuffers(1, &VBOVar);
             glBindBuffer(GL_ARRAY_BUFFER, VBOVar);
-
+            
             return true;
         }
-};
+        
+        static void interVertData(){
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+    
+            std::cout << "Successfully, told OpenGL how to interpret vertex data!" << std::endl;
+        }
+    };
