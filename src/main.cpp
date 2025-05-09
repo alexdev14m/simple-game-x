@@ -115,14 +115,19 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    Utils utils;
+    unsigned int vertShader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    if(!utils.genVBO(VBO)) {
+    if(!Utils::genVBO(VBO)) {
         std::cerr << "Error: Failed to generate VBO." << std::endl;
         return -1;
     }
     
     std::cout << "Generated VBO!" << std::endl;
+
+    Shaders shade("shaders/vertShader.glsl", "shaders/fragShader.glsl");
+
+    Shaders::makeShader(vertShader, shade.getVShaderCode());
 
     winLoop(win);
 
